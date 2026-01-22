@@ -36,14 +36,6 @@
             items: [
                 { id: 'profile', name: 'Profile', href: '/admin/profile', icon: 'fas fa-user-circle' },
                 { id: 'sessions', name: 'Sessions', href: '/admin/sessions', icon: 'fas fa-desktop' },
-                { id: 'settings', name: 'Settings', href: '/admin/settings', icon: 'fas fa-cog' },
-            ]
-        },
-        {
-            id: 'developer',
-            name: 'Developer',
-            items: [
-                { id: 'components', name: 'Components', href: '/admin/components', icon: 'fas fa-puzzle-piece' },
             ]
         }
     ]);

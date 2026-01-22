@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\ComponentsController;
 use App\Http\Controllers\ProfileController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
@@ -15,7 +14,7 @@ use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
 use Laravel\Fortify\Http\Controllers\NewPasswordController;
 
 Route::get('/', function () {
-    return Inertia\Inertia::render('Welcome');
+    return redirect()->route('login');
 });
 
 // Auth Routes - Manual untuk Inertia
@@ -82,14 +81,6 @@ Route::middleware(['auth', 'role:super-admin,admin'])->prefix('admin')->name('ad
     
     // Sessions
     Route::get('/sessions', [\App\Http\Controllers\SessionController::class, 'index'])->name('sessions.index');
-    
-    // Settings
-    Route::get('/settings', function () {
-        return Inertia\Inertia::render('Dashboard/Admin/Settings');
-    })->name('settings');
-    
-    // Components Library
-    Route::get('/components', [ComponentsController::class, 'index'])->name('components');
 });
 
 // Super Admin Only Routes

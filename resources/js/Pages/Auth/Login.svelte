@@ -28,54 +28,59 @@
 >
     <!-- Error Alert -->
     {#if Object.keys($form.errors).length > 0}
-        <FormError errors={$form.errors} title="Login gagal" />
+        <div class="mb-6">
+            <FormError errors={$form.errors} title="Login failed" />
+        </div>
     {/if}
     
     <!-- Form -->
     <form onsubmit={(e) => { e.preventDefault(); submit(); }} class="space-y-5">
         <!-- Email Field -->
         <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">
+            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
                 Email Address
             </label>
             <EmailInput
                 id="email"
                 bind:value={$form.email}
                 error={$form.errors.email}
+                placeholder="name@company.com"
                 required
             />
         </div>
         
         <!-- Password Field -->
         <div>
-            <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">
-                Password
-            </label>
+            <div class="flex items-center justify-between mb-2">
+                <label for="password" class="block text-sm font-semibold text-gray-700">
+                    Password
+                </label>
+                <Link href="/forgot-password" class="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors">
+                    Forgot password?
+                </Link>
+            </div>
             <PasswordInput
                 id="password"
                 bind:value={$form.password}
-                placeholder="Enter your password"
+                placeholder="••••••••"
                 error={$form.errors.password}
                 required
             />
         </div>
         
-        <!-- Remember & Forgot -->
-        <div class="flex items-center justify-between mt-6">
-            <label class="flex items-center cursor-pointer">
+        <!-- Remember Me -->
+        <div class="flex items-center">
+            <label class="relative flex items-center cursor-pointer group">
                 <input
                     type="checkbox"
                     bind:checked={$form.remember}
                     class="w-4 h-4 border-gray-300 rounded transition-colors"
                     style="accent-color: var(--theme-primary-600)"
                 />
-                <span class="ml-2 text-sm text-gray-700">Remember me</span>
+                <span class="ml-2 text-sm text-gray-600 group-hover:text-gray-900 transition-colors">
+                    Keep me signed in
+                </span>
             </label>
-            
-            <Link href="/forgot-password" class="text-sm font-medium transition-colors hover:opacity-80"
-                  style="color: var(--theme-primary-600)">
-                Forgot password?
-            </Link>
         </div>
         
         <!-- Submit Button -->
@@ -87,21 +92,31 @@
                 class="w-full"
                 loading={$form.processing}
                 disabled={$form.processing}
-                icon={$form.processing ? 'fas fa-spinner fa-spin' : 'fas fa-sign-in-alt'}
             >
-                {$form.processing ? 'Signing in...' : 'Sign in'}
+                {#if $form.processing}
+                    Signing in...
+                {:else}
+                    Sign in
+                {/if}
             </Button>
         </div>
     </form>
     
-    <!-- Sign up link -->
-    <div class="mt-8 pt-6 border-t border-gray-100 text-center">
-        <p class="text-sm text-gray-600">
-            Don't have an account?
-            <Link href="/register" class="font-medium transition-colors hover:opacity-80"
-                  style="color: var(--theme-primary-600)">
-                Sign up for free
-            </Link>
-        </p>
+    <!-- Divider -->
+    <div class="relative my-8">
+        <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-200"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-white text-gray-500">New to our platform?</span>
+        </div>
     </div>
+    
+    <!-- Register Link -->
+    <Link 
+        href="/register" 
+        class="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-700 font-medium hover:border-primary-300 hover:text-primary-600 hover:bg-primary-50/50 transition-all duration-200"
+    >
+        Create an account
+    </Link>
 </AuthLayout>

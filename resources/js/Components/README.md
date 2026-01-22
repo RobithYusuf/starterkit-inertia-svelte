@@ -2,10 +2,6 @@
 
 This document provides comprehensive documentation for all UI components available in this starter kit.
 
-## Quick Links
-
-- [Preview all components](/admin/components) - Live component showcase page
-
 ## Table of Contents
 
 1. [UI Components](#ui-components)
@@ -33,12 +29,29 @@ This document provides comprehensive documentation for all UI components availab
 
 2. [Form Components](#form-components)
    - [TextInput](#textinput)
+   - [EmailInput](#emailinput)
    - [PasswordInput](#passwordinput)
    - [Textarea](#textarea)
    - [Select](#select)
+   - [MultiSelect](#multiselect)
+   - [DatePicker](#datepicker)
+   - [DateRangePicker](#daterangepicker)
+   - [RangeSlider](#rangeslider)
+   - [TagInput](#taginput)
    - [Checkbox](#checkbox)
    - [RadioOption](#radiooption)
    - [FileUpload](#fileupload)
+   - [FormError](#formerror)
+
+3. [Layout Components](#layout-components)
+   - [DashboardLayout](#dashboardlayout)
+   - [AuthLayout](#authlayout)
+   - [GuestLayout](#guestlayout)
+
+4. [Dashboard Components](#dashboard-components)
+   - [PageHeader](#pageheader)
+   - [Sidebar](#sidebar)
+   - [DataTable](#datatable)
 
 ---
 
@@ -688,6 +701,379 @@ Drag and drop file upload with preview.
 | `error` | `string` | `''` | Error message |
 | `hint` | `string` | `''` | Help text |
 | `onchange` | `function` | `null` | Files change callback |
+
+---
+
+### FormError
+
+Display form validation errors.
+
+```svelte
+<script>
+    import FormError from '@/Components/UI/Form/FormError.svelte';
+    
+    const errors = {
+        email: 'Invalid email address',
+        password: 'Password is required'
+    };
+</script>
+
+<FormError {errors} title="Validation failed" />
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `errors` | `object` | `{}` | Object with field errors |
+| `title` | `string` | `''` | Error title |
+
+---
+
+## Layout Components
+
+### DashboardLayout
+
+Main layout wrapper for dashboard pages with sidebar and header.
+
+```svelte
+<script>
+    import DashboardLayout from '@/Components/Layouts/DashboardLayout.svelte';
+</script>
+
+<DashboardLayout>
+    <!-- Page content -->
+</DashboardLayout>
+```
+
+**Features:**
+- Responsive sidebar (collapsible on mobile)
+- User menu with avatar
+- Flash message handling via alertStore
+- Role-based navigation
+
+---
+
+### AuthLayout
+
+Layout wrapper for authentication pages (login, register, etc).
+
+```svelte
+<script>
+    import AuthLayout from '@/Components/Layouts/AuthLayout.svelte';
+</script>
+
+<AuthLayout 
+    title="Sign in"
+    subtitle="Enter your credentials"
+>
+    <!-- Form content -->
+</AuthLayout>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | `''` | Page title |
+| `subtitle` | `string` | `''` | Page subtitle |
+
+---
+
+### GuestLayout
+
+Simple layout for public/guest pages.
+
+```svelte
+<script>
+    import GuestLayout from '@/Components/Layouts/GuestLayout.svelte';
+</script>
+
+<GuestLayout>
+    <!-- Page content -->
+</GuestLayout>
+```
+
+---
+
+## Dashboard Components
+
+### PageHeader
+
+Page header with title, breadcrumbs, and action buttons.
+
+```svelte
+<script>
+    import PageHeader from '@/Components/Dashboard/PageHeader.svelte';
+</script>
+
+<PageHeader 
+    title="Users"
+    description="Manage all users"
+    breadcrumbs={[
+        { label: 'Dashboard', href: '/admin/dashboard' },
+        { label: 'Users' }
+    ]}
+    actions={[
+        { type: 'link', href: '/admin/users/create', label: 'Add User', icon: 'fas fa-plus' }
+    ]}
+/>
+
+<!-- Or with snippet for custom actions -->
+<PageHeader title="Users">
+    {#snippet actions()}
+        <Button>Custom Action</Button>
+    {/snippet}
+</PageHeader>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | `''` | Page title |
+| `description` | `string` | `''` | Page description |
+| `breadcrumbs` | `array` | `[]` | Breadcrumb items |
+| `actions` | `array \| snippet` | `[]` | Action buttons or snippet |
+
+---
+
+### Sidebar
+
+Navigation sidebar component (used internally by DashboardLayout).
+
+**Features:**
+- Collapsible menu items
+- Role-based menu visibility
+- Active state indicators
+- Mobile responsive
+
+---
+
+### DataTable
+
+Full-featured data table with sorting, pagination, and actions.
+
+```svelte
+<script>
+    import DataTable from '@/Components/Dashboard/DataTable/DataTable.svelte';
+    
+    const columns = [
+        { key: 'name', label: 'Name', sortable: true },
+        { key: 'email', label: 'Email', sortable: true },
+        { key: 'role', label: 'Role' },
+        { key: 'actions', label: 'Actions', align: 'right' }
+    ];
+</script>
+
+<DataTable 
+    {columns}
+    data={users}
+    meta={pagination}
+    editRoute="/admin/users"
+    perPage={10}
+    currentSortField="name"
+    currentSortOrder="asc"
+    onsort={(e) => handleSort(e)}
+    ondelete={(id) => handleDelete(id)}
+    onpage={(page) => handlePage(page)}
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `columns` | `array` | `[]` | Column definitions |
+| `data` | `array` | `[]` | Table data |
+| `meta` | `object` | `{}` | Pagination meta |
+| `editRoute` | `string` | `''` | Base route for edit links |
+| `emptyMessage` | `string` | `'No data found'` | Empty state message |
+| `loadingData` | `boolean` | `false` | Loading state |
+| `currentSortField` | `string` | `''` | Current sort field |
+| `currentSortOrder` | `string` | `''` | Sort order (asc/desc) |
+| `perPage` | `number` | `10` | Items per page |
+| `perPageOptions` | `array` | `[10,25,50,100]` | Per page options |
+| `onsort` | `function` | - | Sort callback |
+| `ondelete` | `function` | - | Delete callback |
+| `onview` | `function` | - | View callback |
+| `onpage` | `function` | - | Page change callback |
+
+---
+
+## Additional Form Components
+
+### EmailInput
+
+Email input with icon and validation styling.
+
+```svelte
+<script>
+    import EmailInput from '@/Components/UI/Form/EmailInput.svelte';
+    let email = $state('');
+</script>
+
+<EmailInput 
+    bind:value={email}
+    placeholder="name@company.com"
+    error={errors.email}
+/>
+```
+
+---
+
+### MultiSelect
+
+Multiple selection dropdown with search and tags.
+
+```svelte
+<script>
+    import MultiSelect from '@/Components/UI/Form/MultiSelect.svelte';
+    let selected = $state([]);
+    
+    const options = [
+        { value: 'js', label: 'JavaScript' },
+        { value: 'py', label: 'Python' },
+        { value: 'go', label: 'Go' },
+    ];
+</script>
+
+<MultiSelect 
+    label="Languages"
+    {options}
+    bind:value={selected}
+    searchable={true}
+    placeholder="Select languages..."
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `array` | `[]` | Bindable selected values |
+| `options` | `array` | `[]` | Options array |
+| `label` | `string` | `''` | Input label |
+| `placeholder` | `string` | `'Select options'` | Placeholder |
+| `searchable` | `boolean` | `false` | Enable search |
+| `maxDisplay` | `number` | `3` | Max visible tags |
+
+---
+
+### DatePicker
+
+Calendar date picker.
+
+```svelte
+<script>
+    import DatePicker from '@/Components/UI/Form/DatePicker.svelte';
+    let date = $state('');
+</script>
+
+<DatePicker 
+    label="Birth Date"
+    bind:value={date}
+    placeholder="Select date"
+    minDate="1990-01-01"
+    maxDate="2025-12-31"
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | `''` | Bindable date value (YYYY-MM-DD) |
+| `label` | `string` | `''` | Input label |
+| `placeholder` | `string` | `'Select date'` | Placeholder |
+| `minDate` | `string` | `null` | Minimum selectable date |
+| `maxDate` | `string` | `null` | Maximum selectable date |
+| `format` | `string` | `'YYYY-MM-DD'` | Display format |
+
+---
+
+### DateRangePicker
+
+Date range picker with presets.
+
+```svelte
+<script>
+    import DateRangePicker from '@/Components/UI/Form/DateRangePicker.svelte';
+    let startDate = $state('');
+    let endDate = $state('');
+</script>
+
+<DateRangePicker 
+    label="Date Range"
+    bind:startDate
+    bind:endDate
+    showPresets={true}
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `startDate` | `string` | `''` | Bindable start date |
+| `endDate` | `string` | `''` | Bindable end date |
+| `label` | `string` | `''` | Input label |
+| `showPresets` | `boolean` | `true` | Show quick presets |
+
+---
+
+### RangeSlider
+
+Range slider input.
+
+```svelte
+<script>
+    import RangeSlider from '@/Components/UI/Form/RangeSlider.svelte';
+    let value = $state(50);
+</script>
+
+<RangeSlider 
+    label="Volume"
+    bind:value
+    min={0}
+    max={100}
+    showValue={true}
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | `0` | Bindable value |
+| `min` | `number` | `0` | Minimum value |
+| `max` | `number` | `100` | Maximum value |
+| `step` | `number` | `1` | Step increment |
+| `showValue` | `boolean` | `false` | Show current value |
+| `showMinMax` | `boolean` | `false` | Show min/max labels |
+
+---
+
+### TagInput
+
+Tag input with suggestions.
+
+```svelte
+<script>
+    import TagInput from '@/Components/UI/Form/TagInput.svelte';
+    let tags = $state('');
+    
+    const suggestions = ['JavaScript', 'TypeScript', 'Svelte'];
+</script>
+
+<TagInput 
+    label="Skills"
+    bind:value={tags}
+    {suggestions}
+    maxTags={5}
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | `''` | Bindable comma-separated tags |
+| `label` | `string` | `''` | Input label |
+| `placeholder` | `string` | `''` | Placeholder |
+| `suggestions` | `array` | `[]` | Tag suggestions |
+| `maxTags` | `number` | `null` | Maximum tags |
 
 ---
 
